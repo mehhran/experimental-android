@@ -1,21 +1,17 @@
 package com.example.myfirstapp;
 
-import android.annotation.SuppressLint;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Objects;
-
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -32,9 +28,9 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class SmsPostJobService extends JobService {
-    private static final String TAG = "SmsPostJobService";
-    String simNumber = "Unknown";
+public class BatteryPostJobService extends JobService {
+
+    private static final String TAG = "BatteryPostJobService";
 
     @Override
     public boolean onStartJob(JobParameters params) {
@@ -43,30 +39,20 @@ public class SmsPostJobService extends JobService {
         return true;
     }
 
-    @SuppressLint({"MissingPermission", "HardwareIds"})
     private void doBackgroundWork(JobParameters params) {
-
-        TelephonyManager telemanager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-        try {
-            if (!telemanager.getLine1Number().equals("")) {
-                simNumber = telemanager.getLine1Number();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         new Thread(new Runnable() {
             @Override
             public void run() {
 
                 RequestBody formBody = new FormBody.Builder()
-                        .add("sender", params.getExtras().getString("sender"))
-                        .add("body", params.getExtras().getString("body"))
-                        .add("receiver", simNumber)
+                        .add("batteryPct", params.getExtras().getString("batteryPct"))
+                        .add("action", params.getExtras().getString("action"))
+                        .add("action_time", params.getExtras().getString("action_time"))
                         .build();
 
                 Request request = new Request.Builder()
-                        .url("https://manager.javaherian.co/sms/")
+                        .url("https://manager.javaherian.co/sms/battery/")
                         .post(formBody)
                         .addHeader("Authorization", "Token 57d6e60dbd5a25fcdf01d7b3bea0400857a9084e")
                         .build();
@@ -138,7 +124,6 @@ public class SmsPostJobService extends JobService {
             // the bks file we generated above
             final InputStream in = this.getResources().openRawResource( R.raw.manager);
             try {
-                // don't forget to put the password used above in strings.xml/mystore_password
                 ks.load(in, this.getString( R.string.mystore_password ).toCharArray());
             } finally {
                 in.close();
@@ -154,7 +139,6 @@ public class SmsPostJobService extends JobService {
     @Override
     public boolean onStopJob(JobParameters params) {
         Log.d(TAG, "Job cancelled before completion");
-        boolean jobCancelled = true;
         return true;
     }
 }

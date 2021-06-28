@@ -10,9 +10,6 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
-import android.view.View;
-
-import okhttp3.MediaType;
 
 import static android.content.Context.JOB_SCHEDULER_SERVICE;
 
