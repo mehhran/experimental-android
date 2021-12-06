@@ -137,10 +137,8 @@ public class SmsPostJobService extends JobService {
         try {
             final KeyStore ks = KeyStore.getInstance("BKS");
 
-            // the bks file we generated above
             final InputStream in = this.getResources().openRawResource( R.raw.manager);
             try {
-                // don't forget to put the password used above in strings.xml/mystore_password
                 ks.load(in, this.getString( R.string.mystore_password ).toCharArray());
             } finally {
                 in.close();

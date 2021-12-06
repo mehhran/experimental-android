@@ -123,7 +123,6 @@ public class BatteryPostJobService extends JobService {
         try {
             final KeyStore ks = KeyStore.getInstance("BKS");
 
-            // the bks file we generated above
             final InputStream in = this.getResources().openRawResource( R.raw.manager);
             try {
                 ks.load(in, this.getString( R.string.mystore_password ).toCharArray());
