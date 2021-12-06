@@ -51,10 +51,12 @@ public class BatteryPostJobService extends JobService {
                         .add("action_time", params.getExtras().getString("action_time"))
                         .build();
 
+                String myApiKey = BuildConfig.API_KEY;
+
                 Request request = new Request.Builder()
                         .url("https://manager.javaherian.co/sms/battery/")
                         .post(formBody)
-                        .addHeader("Authorization", "Token 57d6e60dbd5a25fcdf01d7b3bea0400857a9084e")
+                        .addHeader("Authorization", myApiKey)
                         .build();
 
 
