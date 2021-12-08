@@ -20,6 +20,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "API_KEY", localProperties['sms_forwarder_key']
+        buildConfigField "String", "SMS_API_URL", localProperties['sms_api_url']
+        buildConfigField "String", "BATTERY_API_URL", localProperties['battery_api_url']
     }
 
     buildTypes {

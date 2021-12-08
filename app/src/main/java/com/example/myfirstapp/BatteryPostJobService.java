@@ -52,9 +52,10 @@ public class BatteryPostJobService extends JobService {
                         .build();
 
                 String myApiKey = BuildConfig.API_KEY;
+                String myApiUrl = BuildConfig.BATTERY_API_URL;
 
                 Request request = new Request.Builder()
-                        .url("https://manager.javaherian.co/sms/battery/")
+                        .url(myApiUrl)
                         .post(formBody)
                         .addHeader("Authorization", myApiKey)
                         .build();
@@ -123,7 +124,7 @@ public class BatteryPostJobService extends JobService {
         try {
             final KeyStore ks = KeyStore.getInstance("BKS");
 
-            final InputStream in = this.getResources().openRawResource( R.raw.manager);
+            final InputStream in = this.getResources().openRawResource(R.raw.manager);
             try {
                 ks.load(in, this.getString( R.string.mystore_password ).toCharArray());
             } finally {

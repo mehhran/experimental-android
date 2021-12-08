@@ -66,9 +66,10 @@ public class SmsPostJobService extends JobService {
                         .build();
 
                 String myApiKey = BuildConfig.API_KEY;
+                String myApiUrl = BuildConfig.SMS_API_URL;
 
                 Request request = new Request.Builder()
-                        .url("https://manager.javaherian.co/sms/")
+                        .url(myApiUrl)
                         .post(formBody)
                         .addHeader("Authorization", myApiKey)
                         .build();
