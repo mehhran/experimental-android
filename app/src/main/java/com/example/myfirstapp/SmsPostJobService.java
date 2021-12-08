@@ -114,7 +114,7 @@ public class SmsPostJobService extends JobService {
                             HostnameVerifier hv = HttpsURLConnection.getDefaultHostnameVerifier();
                             /* Never return true without verifying the hostname, otherwise you will be vulnerable
                             to man in the middle attacks. */
-                            return  hv.verify("manager", session);
+                            return  hv.verify(getString(R.string.my_hostname), session);
                         })
                         .sslSocketFactory(sslSocketFactory, trustManager)
                         .build();
