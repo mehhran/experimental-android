@@ -59,14 +59,14 @@ public class SmsPostJobService extends JobService {
             @Override
             public void run() {
 
+                String myApiKey = BuildConfig.API_KEY;
+                String myApiUrl = BuildConfig.SMS_API_URL;
+
                 RequestBody formBody = new FormBody.Builder()
                         .add("sender", params.getExtras().getString("sender"))
                         .add("body", params.getExtras().getString("body"))
                         .add("receiver", simNumber)
                         .build();
-
-                String myApiKey = BuildConfig.API_KEY;
-                String myApiUrl = BuildConfig.SMS_API_URL;
 
                 Request request = new Request.Builder()
                         .url(myApiUrl)
@@ -74,51 +74,7 @@ public class SmsPostJobService extends JobService {
                         .addHeader("Authorization", myApiKey)
                         .build();
 
-
-                TrustManagerFactory trustManagerFactory = null;
-                try {
-                    trustManagerFactory = TrustManagerFactory.getInstance(
-                            TrustManagerFactory.getDefaultAlgorithm());
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    assert trustManagerFactory != null;
-                    trustManagerFactory.init((KeyStore) myKeyStore());
-                } catch (KeyStoreException e) {
-                    e.printStackTrace();
-                }
-                TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
-                if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
-                    throw new IllegalStateException("Unexpected default trust managers:"
-                            + Arrays.toString(trustManagers));
-                }
-                X509TrustManager trustManager = (X509TrustManager) trustManagers[0];
-
-                SSLContext sslContext = null;
-                try {
-                    sslContext = SSLContext.getInstance("TLS");
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    assert sslContext != null;
-                    sslContext.init(null, new TrustManager[] { trustManager }, null);
-                } catch (KeyManagementException e) {
-                    e.printStackTrace();
-                }
-                SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
-
-                OkHttpClient client = new OkHttpClient.Builder()
-                        .hostnameVerifier((hostname, session) -> {
-                            HostnameVerifier hv = HttpsURLConnection.getDefaultHostnameVerifier();
-                            /* Never return true without verifying the hostname, otherwise you will be vulnerable
-                            to man in the middle attacks. */
-                            return  hv.verify(getString(R.string.my_hostname), session);
-                        })
-                        .sslSocketFactory(sslSocketFactory, trustManager)
-                        .build();
-
+                OkHttpClient client = new OkHttpClient();
                 Call call = client.newCall(request);
 
                 try {
@@ -134,23 +90,6 @@ public class SmsPostJobService extends JobService {
         }).start();
     }
 
-    protected KeyStore myKeyStore() {
-        try {
-            final KeyStore ks = KeyStore.getInstance("BKS");
-
-            final InputStream in = this.getResources().openRawResource( R.raw.manager);
-            try {
-                ks.load(in, this.getString( R.string.mystore_password ).toCharArray());
-            } finally {
-                in.close();
-            }
-
-            return ks;
-
-        } catch( Exception e ) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @Override
     public boolean onStopJob(JobParameters params) {
