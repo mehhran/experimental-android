@@ -16,6 +16,8 @@ import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         @SuppressLint({"MissingPermission", "HardwareIds"}) String simNumber = telemamanger.getLine1Number();
         TextView textView = findViewById(R.id.phone_number);
         textView.setText(simNumber);
+
     }
 
     /** Called when the user taps the Show messages button */
